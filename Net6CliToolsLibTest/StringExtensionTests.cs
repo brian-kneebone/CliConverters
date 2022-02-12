@@ -23,20 +23,68 @@ namespace Net6CliTools.Test
 #pragma warning restore CS8604 // Possible null reference argument.
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 
+            // Invalid arguments entirely as only null or white space
+
             Assert.IsFalse(nullIsFalse);
-            Assert.IsFalse("sdfsdf".MightBeArgumentName());
+            Assert.IsFalse("\t".MightBeArgumentName());
+            Assert.IsFalse("\r".MightBeArgumentName());
+            Assert.IsFalse("\n".MightBeArgumentName());
+            Assert.IsFalse("\r\n".MightBeArgumentName());
+            Assert.IsFalse("\n".MightBeArgumentName());
+            Assert.IsFalse("\r\n".MightBeArgumentName());
+            Assert.IsFalse(" ".MightBeArgumentName());
             Assert.IsFalse("".MightBeArgumentName());
+
+            // No argument prefixes but valid argument names
+
+            Assert.IsFalse("a".MightBeArgumentName());
+            Assert.IsFalse("arg1".MightBeArgumentName());
+
+            // Valid argument prefixes but null or white space for names but valid args
 
             Assert.IsFalse("-".MightBeArgumentName());
             Assert.IsFalse("--".MightBeArgumentName());
+            Assert.IsFalse(nullIsFalse);
 
-            Assert.IsTrue("-arg1".MightBeArgumentName());
+            Assert.IsFalse("-\t".MightBeArgumentName());
+            Assert.IsFalse("-\r".MightBeArgumentName());
+            Assert.IsFalse("-\n".MightBeArgumentName());
+            Assert.IsFalse("-\r\n".MightBeArgumentName());
+            Assert.IsFalse("-\n".MightBeArgumentName());
+            Assert.IsFalse("-\r\n".MightBeArgumentName());
+            Assert.IsFalse("- ".MightBeArgumentName());
+
+            Assert.IsFalse("--\t".MightBeArgumentName());
+            Assert.IsFalse("--\r".MightBeArgumentName());
+            Assert.IsFalse("--\n".MightBeArgumentName());
+            Assert.IsFalse("--\r\n".MightBeArgumentName());
+            Assert.IsFalse("--\n".MightBeArgumentName());
+            Assert.IsFalse("--\r\n".MightBeArgumentName());
+            Assert.IsFalse("-- ".MightBeArgumentName());
+
+            // Valid prefixes with invalid names
+
+            Assert.IsFalse("-arg1".MightBeArgumentName());     // Must be one char only with short prefix indicator
+            Assert.IsFalse("---arg1".MightBeArgumentName());   // Must never have leading - chars in name with long prefix
+            Assert.IsFalse("--arg1-".MightBeArgumentName());   // Must never have leading - chars in name with long prefix
+
+            // Valid short names
+
+            Assert.IsFalse("-".MightBeArgumentName());
+            Assert.IsTrue("-a".MightBeArgumentName());
+            Assert.IsFalse("-ar".MightBeArgumentName());
+            Assert.IsFalse("- a".MightBeArgumentName());
+
+
+
+
+
             Assert.IsTrue("--arg1".MightBeArgumentName());
+
             
             Assert.IsFalse("---arg1".MightBeArgumentName());
             Assert.IsFalse("-- -arg1".MightBeArgumentName());
 
-            Assert.IsTrue("-arg1".MightBeArgumentName());
             Assert.IsTrue("--arg1".MightBeArgumentName());
 
             Assert.IsFalse("- arg1".MightBeArgumentName());
