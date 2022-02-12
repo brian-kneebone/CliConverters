@@ -3,12 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CliConvertersLib", "CliConvertersLib\CliConvertersLib.csproj", "{DB1F047D-CFCB-4561-8677-C81617531648}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BC41BA0D-4672-4AEB-BCC2-7866784A36B4}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net6CliToolsLib", "Net6CliToolsLib\Net6CliToolsLib.csproj", "{CCFC2E11-3D13-4B2E-A53F-69CE167F80B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,10 +16,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DB1F047D-CFCB-4561-8677-C81617531648}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DB1F047D-CFCB-4561-8677-C81617531648}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DB1F047D-CFCB-4561-8677-C81617531648}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DB1F047D-CFCB-4561-8677-C81617531648}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCFC2E11-3D13-4B2E-A53F-69CE167F80B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCFC2E11-3D13-4B2E-A53F-69CE167F80B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCFC2E11-3D13-4B2E-A53F-69CE167F80B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCFC2E11-3D13-4B2E-A53F-69CE167F80B5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
