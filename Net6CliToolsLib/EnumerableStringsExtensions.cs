@@ -8,7 +8,7 @@ namespace Net6CliTools
 {
     public static class EnumerableStringsExtensions
     {
-        internal static int IndexOf(this IEnumerable<string> value, string? searchValue, StringComparison comparison)
+        public static int IndexOf(this IEnumerable<string> value, string? searchValue, StringComparison comparison)
         {
             for (int i = 0; i < value.Count(); i++)
             {
