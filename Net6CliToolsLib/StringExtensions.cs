@@ -10,13 +10,13 @@ namespace Net6CliTools
     {
         public static bool MightBeArgumentName(this string value)
         {
-            if (value == null)
+            if (string.IsNullOrWhiteSpace(value))
                 return false;
 
-            if (value.StartsWith("-") || value.StartsWith("--"))
-                return true;
+            if (!value.StartsWith("-") && !value.StartsWith("--"))
+                return false;
 
-            return false;
+            throw new NotImplementedException();
         }
     }
 }
