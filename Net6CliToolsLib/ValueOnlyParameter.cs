@@ -14,7 +14,7 @@ namespace Net6CliTools
         }
     }
 
-    public abstract class ValueOnlyParameter<V> : ValueOnlyParameter where V : class
+    public abstract class ValueOnlyParameter<V> : ValueOnlyParameter where V : class?
     {
         public V Value { get; private set; }
 

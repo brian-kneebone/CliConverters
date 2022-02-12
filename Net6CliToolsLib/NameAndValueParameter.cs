@@ -15,7 +15,7 @@ namespace Net6CliTools
         }
     }
 
-    public abstract class NameAndValueParameter<V> : NameAndValueParameter where V : class
+    public abstract class NameAndValueParameter<V> : NameAndValueParameter where V : class?
     {
         public abstract string? ShortName { get; protected set; }
 
