@@ -20,8 +20,8 @@ namespace Net6CliTools
 
         internal static int IndexOfNamedArgument(this IList<string> value, string? shortName, string longName)
         {
-            var shortIndex = (shortName == null) ? -1 : value.IndexOfCaseInsensitive($"-{shortName}");
-            var longIndex = value.IndexOfCaseInsensitive($"--{longName}");
+            var shortIndex = (shortName == null) ? -1 : value.IndexOf($"-{shortName}", StringComparison.InvariantCultureIgnoreCase);
+            var longIndex = value.IndexOf($"--{longName}", StringComparison.InvariantCultureIgnoreCase);
 
             if (shortIndex == -1 && longIndex == -1)
                 return -1;
@@ -34,22 +34,7 @@ namespace Net6CliTools
 
         }
 
-        internal static int IndexOfCaseInsensitive(this IList<string> value, string? searchValue)
-        {
-            if (searchValue == null)
-                return -1;
-
-            var loweredSearchValue = searchValue.ToLower();
-
-            for (int i = 0; i < value.Count; i++)
-            {
-                if (value[i].ToLower() == loweredSearchValue)
-                    return i;
-            }
-
-            return -1;
-
-        }
+        
 
     }
 }
