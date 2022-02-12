@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Net6CliTools
 {
-    public static class StringExtensions
+    public static class ArgumentValidator
     {
         public static bool MightBeArgumentName(this string value)
         {

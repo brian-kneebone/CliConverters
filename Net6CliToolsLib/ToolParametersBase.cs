@@ -9,8 +9,6 @@ namespace Net6CliTools
 {
     public abstract class ToolParametersBase
     {
-        public FileInfo? Filename { get; private set; } = null;
-
         protected string[] Args => this._args;
         private readonly string[] _args;
 
@@ -29,21 +27,9 @@ namespace Net6CliTools
             if (args == null || args.Length == 0)
                 return;
 
-            this.ParseFileNameIfPresent(args);
-            
         }
 
-        private void ParseFileNameIfPresent(string[] args)
-        {
-            if (args.Length == 0)
-                return;
-
-            this.Filename = new FileInfo(args[1]);
-
-            if (this.Filename.Exists)
-                throw new FileNotFoundException(args[1]);
-
-        }
+        
 
 
 
