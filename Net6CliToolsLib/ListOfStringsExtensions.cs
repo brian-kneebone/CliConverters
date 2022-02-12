@@ -8,7 +8,7 @@ namespace Net6CliTools
 {
     public static class ListOfStringsExtensions
     {
-        public static string Extract(this IList<string> value, int index)
+        internal static string Extract(this IList<string> value, int index)
         {
             if (value.ElementAtOrDefault(index) == null)
                 throw new IndexOutOfRangeException($"Extraction index {index} is out of range for list of size {value.Count}.");
@@ -18,7 +18,7 @@ namespace Net6CliTools
             return returnValue;
         }
 
-        public static int IndexOfNamedArgument(this IList<string> value, string? shortName, string longName)
+        internal static int IndexOfNamedArgument(this IList<string> value, string? shortName, string longName)
         {
             var shortIndex = (shortName == null) ? -1 : value.IndexOf($"-{shortName}");
             var longIndex = value.IndexOf($"--{longName}");
