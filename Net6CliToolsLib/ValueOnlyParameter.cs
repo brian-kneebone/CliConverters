@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace Net6CliTools
 {
-    public abstract class ValueOnlyParameter<V> : ToolParameter where V : class
+    public abstract class ValueOnlyParameter : ToolParameter
+    {
+        public static string GetStringValue(IList<string> args)
+        {
+            return args.Extract(0);
+        }
+    }
+
+    public abstract class ValueOnlyParameter<V> : ValueOnlyParameter where V : class
     {
         public V Value { get; private set; }
 
@@ -20,10 +28,7 @@ namespace Net6CliTools
             this.Value = value ?? this.DefaultValue;
         }
 
-        protected ValueOnlyParameter(string value)
-        {
-            throw new NotImplementedException();
-        }
+
 
     }
 }

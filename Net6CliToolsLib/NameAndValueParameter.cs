@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace Net6CliTools
 {
-    public abstract class NameAndValueParameter<V> : ToolParameter where V : class
+    public abstract class NameAndValueParameter : ToolParameter
+    {
+        public static string GetStringValue(IList<string> args, string? shortName, string longName)
+        {
+            var index = args.IndexOfNamedArgument(shortName, longName);
+            return args.Extract(index);
+        }
+    }
+
+    public abstract class NameAndValueParameter<V> : NameAndValueParameter where V : class
     {
         public abstract string? ShortName { get; protected set; }
 
