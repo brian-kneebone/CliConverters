@@ -8,7 +8,7 @@ namespace Net6CliTools
 {
     public static class StringExtensions
     {
-        public static bool MightBeAnArgumentName(this string value)
+        public static bool MightBeArgumentName(this string value)
         {
             if (value == null)
                 return false;

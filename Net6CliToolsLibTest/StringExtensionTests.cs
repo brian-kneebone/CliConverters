@@ -15,28 +15,28 @@ namespace Net6CliTools.Test
         {
             string? nullString = null;
 
-            Assert.IsFalse(nullString?.MightBeAnArgumentName());
-            Assert.IsFalse("sdfsdf".MightBeAnArgumentName());
-            Assert.IsFalse("".MightBeAnArgumentName());
+            Assert.IsFalse(nullString?.MightBeArgumentName());
+            Assert.IsFalse("sdfsdf".MightBeArgumentName());
+            Assert.IsFalse("".MightBeArgumentName());
 
-            Assert.IsFalse("-".MightBeAnArgumentName());
-            Assert.IsFalse("--".MightBeAnArgumentName());
+            Assert.IsFalse("-".MightBeArgumentName());
+            Assert.IsFalse("--".MightBeArgumentName());
 
-            Assert.IsTrue("-arg1".MightBeAnArgumentName());
-            Assert.IsTrue("--arg1".MightBeAnArgumentName());
+            Assert.IsTrue("-arg1".MightBeArgumentName());
+            Assert.IsTrue("--arg1".MightBeArgumentName());
             
-            Assert.IsFalse("---arg1".MightBeAnArgumentName());
-            Assert.IsFalse("-- -arg1".MightBeAnArgumentName());
+            Assert.IsFalse("---arg1".MightBeArgumentName());
+            Assert.IsFalse("-- -arg1".MightBeArgumentName());
 
-            Assert.IsTrue("-arg1".MightBeAnArgumentName());
-            Assert.IsTrue("--arg1".MightBeAnArgumentName());
+            Assert.IsTrue("-arg1".MightBeArgumentName());
+            Assert.IsTrue("--arg1".MightBeArgumentName());
 
-            Assert.IsFalse("- arg1".MightBeAnArgumentName());
-            Assert.IsFalse("-- arg1".MightBeAnArgumentName());
+            Assert.IsFalse("- arg1".MightBeArgumentName());
+            Assert.IsFalse("-- arg1".MightBeArgumentName());
 
-            Assert.IsFalse("-arg1-sdfsdf".MightBeAnArgumentName());
-            Assert.IsTrue("--arg1-sdfsdf".MightBeAnArgumentName());
-            Assert.IsFalse("--arg1 sdfsdf".MightBeAnArgumentName());
+            Assert.IsFalse("-arg1-sdfsdf".MightBeArgumentName());
+            Assert.IsTrue("--arg1-sdfsdf".MightBeArgumentName());
+            Assert.IsFalse("--arg1 sdfsdf".MightBeArgumentName());
         }
     }
 }
