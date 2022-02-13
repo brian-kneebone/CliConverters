@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,8 @@ namespace Net6CliTools.Loggers
             logger.Info("Test quickly opening & closing.");
             logger.Dispose();
             Assert.IsTrue(logger.State == LoggerStates.Closed);
+            Assert.IsTrue(File.Exists(logger.Filename));
+            Assert.IsTrue(File.ReadAllBytes(logger.Filename ?? throw new NullReferenceException()).Length > 0);
         }
     }
 }
