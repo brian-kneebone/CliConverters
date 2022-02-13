@@ -25,6 +25,7 @@ namespace Net6CliTools.Loggers
 
         // TODO: put stream and writing into protected thread.
         // TODO: make Write() methods thread-safe and async.
+        // https://github.com/brian-kneebone/Net6CliTools/issues/1
 
         private FileStream? _stream = null;
         private StreamWriter? _writer = null;
@@ -41,6 +42,7 @@ namespace Net6CliTools.Loggers
         }
 
         /// <remarks>NOT THREAD SAFE</remarks>
+        /// <see cref="https://github.com/brian-kneebone/Net6CliTools/issues/1"/>
         public void Debug(string message)
         {
             var prefix = TextFileLogger.GetStringPrefix("DEBUG");
@@ -64,6 +66,7 @@ namespace Net6CliTools.Loggers
         }
 
         /// <remarks>NOT THREAD SAFE</remarks>
+        /// <see cref="https://github.com/brian-kneebone/Net6CliTools/issues/1"/>
         public void Info(string message)
         {
             var prefix = TextFileLogger.GetStringPrefix("DEBUG");
@@ -87,6 +90,7 @@ namespace Net6CliTools.Loggers
         }
 
         /// <remarks>NOT THREAD SAFE</remarks>
+        /// <see cref="https://github.com/brian-kneebone/Net6CliTools/issues/1"/>
         public void Warn(string message)
         {
             var prefix = TextFileLogger.GetStringPrefix("DEBUG");
@@ -110,6 +114,7 @@ namespace Net6CliTools.Loggers
         }
 
         /// <remarks>NOT THREAD SAFE</remarks>
+        /// <see cref="https://github.com/brian-kneebone/Net6CliTools/issues/1"/>
         public void Error(string message, Exception? exception = null)
         {
             var prefix = TextFileLogger.GetStringPrefix("DEBUG");
@@ -133,6 +138,7 @@ namespace Net6CliTools.Loggers
         }
 
         /// <remarks>NOT THREAD SAFE</remarks>
+        /// <see cref="https://github.com/brian-kneebone/Net6CliTools/issues/1"/>
         private void Write(string prefix, string message, Exception? error = null)
         {
             this.OpenIfNeeded();
