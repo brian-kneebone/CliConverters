@@ -17,8 +17,7 @@ namespace Net6CliTools.Loggers
             var logger = TextFileLogger.Create("QuickOpenCloseTest", LogLevels.Debug);
             logger.Info("Test quickly opening & closing.");
             logger.Dispose();
-            var state = logger.State;
-            Assert.IsTrue(state == LoggerStates.Closed);
+            Assert.IsTrue(logger.State == LoggerStates.Closed);
             Assert.IsTrue(File.Exists(logger.Filename));
             Assert.IsTrue(File.ReadAllBytes(logger.Filename ?? throw new NullReferenceException()).Length > 0);
         }

@@ -203,7 +203,8 @@ namespace Net6CliTools.Loggers
             try
             {
                 this.State = LoggerStates.Closing;
-                this._writer?.Write($"Close: {this._filename} @ {now.ToString("yyyy-MM-dd @ HH:mm:ss.fff")}");
+                this._writer?.WriteLine(String.Empty);
+                this._writer?.WriteLine($"Close: {this._filename} @ {now.ToString("yyyy-MM-dd HH:mm:ss.fff")}");
                 this._writer?.Flush();
                 this._writer?.Close();
                 this._stream?.Close();
@@ -261,7 +262,8 @@ namespace Net6CliTools.Loggers
 
             this._stream = file.OpenWrite();
             this._writer = new StreamWriter(this._stream);
-            this._writer.Write($"Open: {this._filename} @ {now.ToString("yyyy-MM-dd @ HH:mm:ss.fff")}");
+            this._writer.WriteLine($"Open: {this._filename} @ {now.ToString("yyyy-MM-dd @ HH:mm:ss.fff")}");
+            this._writer.WriteLine(String.Empty);
             this._writer.Flush();
 
             this.State = LoggerStates.Open;
@@ -269,7 +271,7 @@ namespace Net6CliTools.Loggers
 
         private static string GetStringPrefix(string type)
         {
-            return DateTime.Now.ToString($"yyyy-MM-dd-HH-mm-ss.fff [{type}] ");
+            return DateTime.Now.ToString($"yyyy-MM-dd HH:mm:ss.fff [{type}] ");
         }
 
         public static ITextFileLogger Create(string filenamePrefix, LogLevels? level = LogLevels.None)
