@@ -12,7 +12,7 @@ namespace Net6CliTools.Parameters
 
         internal const string LONG_NAME = "dummy-arg-name-d";
 
-        private ShortAndLongNameOnlyParameter(string? shortName, string longName) : base(shortName, longName)
+        internal ShortAndLongNameOnlyParameter() : base(SHORT_NAME, LONG_NAME)
         {
         }
 
