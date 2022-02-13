@@ -23,6 +23,9 @@ namespace Net6CliTools.Loggers
         public string? Filename => this._filename;
         private string? _filename = null;
 
+        // TODO: put stream and writing into protected thread.
+        // TODO: make Write() methods thread-safe and async.
+
         private FileStream? _stream = null;
         private StreamWriter? _writer = null;
 
@@ -37,6 +40,7 @@ namespace Net6CliTools.Loggers
                 this._level = level.Value;
         }
 
+        /// <remarks>NOT THREAD SAFE</remarks>
         public void Debug(string message)
         {
             var prefix = TextFileLogger.GetStringPrefix("DEBUG");
@@ -59,6 +63,7 @@ namespace Net6CliTools.Loggers
             }
         }
 
+        /// <remarks>NOT THREAD SAFE</remarks>
         public void Info(string message)
         {
             var prefix = TextFileLogger.GetStringPrefix("DEBUG");
@@ -81,6 +86,7 @@ namespace Net6CliTools.Loggers
             }
         }
 
+        /// <remarks>NOT THREAD SAFE</remarks>
         public void Warn(string message)
         {
             var prefix = TextFileLogger.GetStringPrefix("DEBUG");
@@ -103,6 +109,7 @@ namespace Net6CliTools.Loggers
             }
         }
 
+        /// <remarks>NOT THREAD SAFE</remarks>
         public void Error(string message, Exception? exception = null)
         {
             var prefix = TextFileLogger.GetStringPrefix("DEBUG");
@@ -125,6 +132,7 @@ namespace Net6CliTools.Loggers
             }
         }
 
+        /// <remarks>NOT THREAD SAFE</remarks>
         private void Write(string prefix, string message, Exception? error = null)
         {
             this.OpenIfNeeded();
