@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Net6CliTools
+namespace Net6CliTools.Parameters
 {
     public abstract class ToolParameter
     {
