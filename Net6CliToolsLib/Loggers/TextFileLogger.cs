@@ -210,8 +210,9 @@ namespace Net6CliTools.Loggers
             }
             catch
             {
-                this.State = LoggerStates.Closed;
             }
+
+            this.State = LoggerStates.Closed;
         }
 
         private void OpenIfNeeded()
