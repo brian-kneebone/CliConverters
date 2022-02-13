@@ -271,7 +271,7 @@ namespace Net6CliTools.Loggers
             return DateTime.Now.ToString($"yyyy-MM-dd-HH-mm-ss.fff [{type}] ");
         }
 
-        public static ILogger Create(string filenamePrefix, LogLevels? level = LogLevels.None)
+        public static ITextFileLogger Create(string filenamePrefix, LogLevels? level = LogLevels.None)
         {
             return new TextFileLogger(filenamePrefix, level);
         }
