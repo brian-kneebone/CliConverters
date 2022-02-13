@@ -22,9 +22,6 @@ namespace Net6CliTools.Parameters
 
         protected ValueOnlyParameter(V value)
         {
-            if (this.IsRequired && value == null)
-                throw new ArgumentNullException(nameof(value));
-
             this.Value = value ?? this.DefaultValue;
         }
 

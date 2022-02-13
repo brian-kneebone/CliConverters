@@ -8,6 +8,5 @@ namespace Net6CliTools.Parameters
 {
     public abstract class ToolParameter
     {
-        public abstract bool IsRequired { get; }
     }
 }

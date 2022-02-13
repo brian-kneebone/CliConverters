@@ -30,9 +30,6 @@ namespace Net6CliTools.Parameters
             this.ShortName = shortName;
             this.LongName = longName ?? throw new ArgumentNullException(nameof(longName));
 
-            if (this.IsRequired && value == null)
-                throw new ArgumentNullException(nameof(value));
-
             this.Value = value ?? this.Value;
         }
 
