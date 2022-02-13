@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Net6CliTools.Test.Extensions
+namespace Net6CliTools.Extensions
 {
     [TestClass]
     public class TestEnumerableStringsExtensions

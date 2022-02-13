@@ -8,7 +8,7 @@
 
     <PackageId />
 
-    <RootNamespace>Net6CliTools.Test</RootNamespace>
+    <RootNamespace>Net6CliTools</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
