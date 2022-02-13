@@ -8,6 +8,8 @@ namespace Net6CliTools.Loggers
 {
     public interface ILogger : IDisposable
     {
+        LoggerStates State { get; }
+
         void Info(string message);
 
         void Warn(string message);

@@ -6,25 +6,27 @@ using System.Threading.Tasks;
 
 namespace Net6CliTools.Loggers
 {
-    public class TextFileLogger : ILogger
+    public class TextFileLogger : ITextFileLogger
     {
         private readonly object _lock = new object();
 
         public LoggerStates State 
         { 
             get { lock (_lock) { return this._state; } }
-            set { lock (_lock) { this._state = value; } } 
+            private set { lock (_lock) { this._state = value; } } 
         }
         private LoggerStates _state = LoggerStates.Unopened;
 
         private readonly string _filenamePrefix;
         private readonly LogLevels _level = LogLevels.None;
-        
-        private string? _filename;
+
+        public string? Filename => this._filename;
+        private string? _filename = null;
+
         private FileStream? _stream = null;
         private StreamWriter? _writer = null;
 
-        public TextFileLogger(string filenamePrefix, LogLevels? level = LogLevels.None)
+        private TextFileLogger(string filenamePrefix, LogLevels? level = LogLevels.None)
         {
             if (string.IsNullOrEmpty(filenamePrefix))
                 throw new ArgumentNullException(nameof(filenamePrefix));    
@@ -35,7 +37,6 @@ namespace Net6CliTools.Loggers
                 this._level = level.Value;
         }
 
-        /// <remarks>Not thread safe</remarks>
         public void Debug(string message)
         {
             var prefix = TextFileLogger.GetStringPrefix("DEBUG");
@@ -58,7 +59,6 @@ namespace Net6CliTools.Loggers
             }
         }
 
-        /// <remarks>Not thread safe</remarks>
         public void Info(string message)
         {
             var prefix = TextFileLogger.GetStringPrefix("DEBUG");
@@ -81,7 +81,6 @@ namespace Net6CliTools.Loggers
             }
         }
 
-        /// <remarks>Not thread safe</remarks>
         public void Warn(string message)
         {
             var prefix = TextFileLogger.GetStringPrefix("DEBUG");
@@ -104,7 +103,6 @@ namespace Net6CliTools.Loggers
             }
         }
 
-        /// <remarks>Not thread safe</remarks>
         public void Error(string message, Exception? exception = null)
         {
             var prefix = TextFileLogger.GetStringPrefix("DEBUG");
@@ -271,6 +269,11 @@ namespace Net6CliTools.Loggers
         private static string GetStringPrefix(string type)
         {
             return DateTime.Now.ToString($"yyyy-MM-dd-HH-mm-ss.fff [{type}] ");
+        }
+
+        public static ILogger Create(string filenamePrefix, LogLevels? level = LogLevels.None)
+        {
+            return new TextFileLogger(filenamePrefix, level);
         }
 
     }
