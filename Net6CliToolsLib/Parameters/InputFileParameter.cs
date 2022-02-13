@@ -8,8 +8,6 @@ namespace Net6CliTools.Parameters
 {
     public class InputFileParameter : ValueOnlyParameter<FileInfo?>
     {
-        public override FileInfo? DefaultValue => null;
-
         private InputFileParameter(FileInfo? value) : base(value)
         {
         }

@@ -8,14 +8,11 @@ namespace Net6CliTools.Parameters
 {
     public abstract class NameOnlyParameter : ToolParameter
     {
-        public string? ShortName { get; private set; }
-
-        public string LongName { get; private set; }
+        public ParameterName Name { get; private set; }
 
         protected NameOnlyParameter(string? shortName, string longName)
         {
-            this.ShortName = shortName;
-            this.LongName = longName ?? throw new ArgumentNullException(nameof(longName));
+            this.Name = new ParameterName(shortName, longName);
         }
 
     }
