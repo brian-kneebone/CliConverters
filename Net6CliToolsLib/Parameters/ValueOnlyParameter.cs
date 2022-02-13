@@ -18,11 +18,9 @@ namespace Net6CliTools.Parameters
     {
         public V Value { get; private set; }
 
-        public abstract V DefaultValue { get; }
-
         protected ValueOnlyParameter(V value)
         {
-            this.Value = value ?? this.DefaultValue;
+            this.Value = value ?? throw new ArgumentNullException(nameof(value));
         }
 
 

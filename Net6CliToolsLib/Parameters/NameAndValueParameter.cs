@@ -23,14 +23,11 @@ namespace Net6CliTools.Parameters
 
         public abstract V Value { get; protected set; }
 
-        public abstract V DefaultValue { get; }
-
         protected NameAndValueParameter(string? shortName, string longName, V value)
         {
             this.ShortName = shortName;
             this.LongName = longName ?? throw new ArgumentNullException(nameof(longName));
-
-            this.Value = value ?? this.Value;
+            this.Value = value ?? throw new ArgumentNullException(nameof(value));
         }
 
     }
