@@ -8,12 +8,13 @@ namespace Net6CliTools.Loggers
 {
     public class TextFileLogger : ITextFileLogger
     {
-        private readonly object _lock = new object();
+        private readonly object _writeLock = new object();
+        private readonly object _stateLock = new object();
 
         public LoggerStates State 
         { 
-            get { lock (_lock) { return this._state; } }
-            private set { lock (_lock) { this._state = value; } } 
+            get { lock (_stateLock) { return this._state; } }
+            private set { lock (_stateLock) { this._state = value; } } 
         }
         private LoggerStates _state = LoggerStates.Unopened;
 
@@ -169,12 +170,16 @@ namespace Net6CliTools.Loggers
                     throw new NotImplementedException($"Cannot write with text file logger state {this.State}.");
             }
 
-            this._writer?.WriteLine(prefix + message);
+            lock (this._writeLock)
+            {
+                this._writer?.WriteLine(prefix + message);
 
-            if (error != null)
-                this._writer?.WriteLine(error.ToString());
+                if (error != null)
+                    this._writer?.WriteLine(error.ToString());
 
-            this._writer?.Flush();
+                this._writer?.Flush();
+            }
+
         }
 
         public void Dispose()

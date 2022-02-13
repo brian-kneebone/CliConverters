@@ -44,7 +44,7 @@ namespace Net6CliTools.Loggers
 
             for (int i = 0; i < numberOfThreads; i++)
             {
-                tasks[i] = new Task(() => { initiateRandomizedErrorLogging(logger, 10, 50); });
+                tasks[i] = new Task(() => { InitiateRandomizedErrorLogging(logger, 10, 50); });
             }
 
             return tasks;
@@ -77,8 +77,9 @@ namespace Net6CliTools.Loggers
                 }
 
                 var numberDone = statusResults.Count(t => (t == TaskStatus.RanToCompletion) || (t == TaskStatus.Faulted) || (t == TaskStatus.Canceled));
-                continueRunning = tasks.Length == numberDone;
+                continueRunning = tasks.Length != numberDone;
 
+                logger.Error($" -> Tasks Done: {numberDone} of {tasks.Length})");
                 logger.Error($" -> Continue Running: {continueRunning}");
 
                 if (continueRunning)
@@ -90,7 +91,7 @@ namespace Net6CliTools.Loggers
 
         }
 
-        private static void initiateRandomizedErrorLogging(ITextFileLogger logger, int iterations, int maxWaitMs)
+        private static void InitiateRandomizedErrorLogging(ITextFileLogger logger, int iterations, int maxWaitMs)
         {
             var threadId = Guid.NewGuid().ToString();
             var random = new Random();
