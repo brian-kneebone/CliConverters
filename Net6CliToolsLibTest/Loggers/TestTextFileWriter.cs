@@ -46,9 +46,9 @@ namespace Net6CliTools.Loggers
             var writer = new TextFileWriter(filename);
             writer.StartAsync();
 
-            var tasks = CreateThreadsThatErrorLog(writer, 10);
+            var tasks = CreateThreadsThatErrorLog(writer, 200);
             StartThreadsThatErrorLog(tasks);
-            WaitUntilThreadsThatErrorLogComplete(tasks, writer, 50);
+            WaitUntilThreadsThatErrorLogComplete(tasks, writer, 25);
 
             writer.Stop();
 
@@ -76,6 +76,9 @@ namespace Net6CliTools.Loggers
                 task.Start();
         }
 
+        /// <param name="tasks">Array of Tasks</param>
+        /// <param name="writer">Writer</param>
+        /// <param name="waitBetweenStatusChecksInMs">Wait Between Status Checks</param>
         private static void WaitUntilThreadsThatErrorLogComplete(Task[] tasks, TextFileWriter writer, int waitBetweenStatusChecksInMs)
         {
             writer.WriteLineAsync("Start Monitoring");
