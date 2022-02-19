@@ -15,10 +15,10 @@ namespace Net6CliTools.Loggers
 
         private readonly object _stateLock = new object();
 
-        private TextFileWriterState State
+        public TextFileWriterState State
         {
             get { lock (_stateLock) { return this._state; } }
-            set { lock (_stateLock) { this._state = value; } }
+            private set { lock (_stateLock) { this._state = value; } }
         }
 
         private TextFileWriterState _state = TextFileWriterState.Idle;
