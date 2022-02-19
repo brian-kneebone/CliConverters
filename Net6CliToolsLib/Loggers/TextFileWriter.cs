@@ -36,9 +36,6 @@ namespace Net6CliTools.Loggers
 
         private async void StartAsync()
         {
-            if (this.State != TextFileWriterState.Idle)
-                throw new InvalidOperationException($"{this.GetType().Name} is {this.State} and cannot start asynchronously while not in a {TextFileWriterState.Idle} state.");
-
             this._state = TextFileWriterState.Running;
 
             var task = new Task(() => {
@@ -52,6 +49,9 @@ namespace Net6CliTools.Loggers
 
         public void Start()
         {
+            if (this.State != TextFileWriterState.Idle)
+                throw new InvalidOperationException($"{this.GetType().Name} is {this.State} and cannot start asynchronously while not in a {TextFileWriterState.Idle} state.");
+
             this.StartAsync();
             this.WaitUntilRunning();
         }
@@ -75,6 +75,25 @@ namespace Net6CliTools.Loggers
 
         }
 
+        public void WaitUntilDisposed(int? waitInMilliseconds = null)
+        {
+            var waitStarted = DateTime.Now;
+
+            while (this._state != TextFileWriterState.Disposed)
+            {
+                if (waitInMilliseconds.HasValue)
+                {
+                    var duration = DateTime.Now - waitStarted;
+
+                    if (duration.TotalMilliseconds > waitInMilliseconds.Value)
+                        throw new TimeoutException($"{this.GetType().Name} failed to dispose in {waitInMilliseconds.Value} milliseconds with state {this._state}.");
+                }
+
+                Thread.Sleep(50);
+            }
+        }
+
+
         //public async Task StopAsync()
         //{
         //    var task = new Task(() => { this.Stop(); });
@@ -85,7 +104,7 @@ namespace Net6CliTools.Loggers
 
         public void Stop()
         {
-            if (this.State != TextFileWriterState.Running)
+            if (this._state != TextFileWriterState.Running)
                 throw new InvalidOperationException($"{this.GetType().Name} is {this.State} and cannot stop while not in a {TextFileWriterState.Running} state.");
 
             this.State = TextFileWriterState.Stopping;
@@ -102,30 +121,28 @@ namespace Net6CliTools.Loggers
             GC.SuppressFinalize(this);
         }
 
-        public async void WriteLineAsync(string line)
+        public void WriteLine(string line)
         {
-            var task = new Task(() => { this.WriteLine(line); });
-            // var awaiter = task.GetAwaiter();
-            task.Start();
-            await task;
-        }
-
-        private void WriteLine(string line)
-        {
-            if (this.State != TextFileWriterState.Running)
+            if (this._state != TextFileWriterState.Running)
                 throw new InvalidOperationException($"{this.GetType().Name} is {this.State} and cannot write while not in a {TextFileWriterState.Running} state.");
 
-            lock (this._queueLock)
-                this._queue.Enqueue(line);
+            var task = new Task(() => {
+
+                lock (this._queueLock)
+                    this._queue.Enqueue(line);
+
+            });
+
+            task.Start();
         }
 
         private void LoopingWrite()
         {
-            while (this.State == TextFileWriterState.Running)
+            while (this._state == TextFileWriterState.Running)
             {
                 this.WriteIfNeeded();
 
-                if (this.State == TextFileWriterState.Running)
+                if (this._state == TextFileWriterState.Running)
                     Thread.Sleep(100); 
             }
 
@@ -184,7 +201,7 @@ namespace Net6CliTools.Loggers
 
             this._writer?.Dispose();
             this._stream?.Dispose();
-            this.State = TextFileWriterState.Disposed;
+            this._state = TextFileWriterState.Disposed;
         }
 
         private int GetQueueCount()
