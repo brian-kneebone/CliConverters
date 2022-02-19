@@ -11,9 +11,7 @@ namespace Net6CliTools.Loggers
         private DateTime? _start = null;
 
         private readonly object _queueLock = new object();
-
-
-        private Queue<string> _queue = new Queue<string>();
+        private readonly Queue<string> _queue = new();
 
         private readonly object _stateLock = new object();
 
