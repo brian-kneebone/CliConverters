@@ -25,7 +25,9 @@ namespace Net6CliTools.Loggers
 
         private TextFileWriterState _state = TextFileWriterState.Idle;
 
-        private readonly FileInfo? _file;
+        public FileInfo File => this._file;
+        private readonly FileInfo _file;
+        
         private FileStream? _stream;
         private StreamWriter? _writer;
 
