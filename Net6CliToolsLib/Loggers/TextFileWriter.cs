@@ -11,6 +11,8 @@ namespace Net6CliTools.Loggers
         private DateTime? _start = null;
 
         private readonly object _queueLock = new object();
+
+
         private Queue<string> _queue = new Queue<string>();
 
         private readonly object _stateLock = new object();
@@ -47,6 +49,24 @@ namespace Net6CliTools.Loggers
             this.LoopingWrite();
         }
 
+        public void WaitUntilRunning()
+        {
+            switch (this.State)
+            {
+                case TextFileWriterState.Running:
+                    return;
+
+                case TextFileWriterState.Idle:
+                    return;
+
+                case TextFileWriterState.Stopping:
+                case TextFileWriterState.Disposed:
+                default:
+                    throw new InvalidOperationException($"{this.GetType().Name} is {this.State} and cannot wait until in a {TextFileWriterState.Running} state.");
+            }
+
+        }
+
         //public async Task StopAsync()
         //{
         //    var task = new Task(() => { this.Stop(); });
@@ -57,6 +77,9 @@ namespace Net6CliTools.Loggers
 
         public void Stop()
         {
+            if (this.State != TextFileWriterState.Running)
+                throw new InvalidOperationException($"{this.GetType().Name} is {this.State} and cannot stop while not in a {TextFileWriterState.Running} state.");
+
             this.State = TextFileWriterState.Stopping;
 
             while(this.State != TextFileWriterState.Disposed)
@@ -65,7 +88,9 @@ namespace Net6CliTools.Loggers
 
         public void Dispose()
         {
-            this.Stop();
+            if (this.State == TextFileWriterState.Running)
+                this.Stop();
+
             GC.SuppressFinalize(this);
         }
 
@@ -79,6 +104,9 @@ namespace Net6CliTools.Loggers
 
         private void WriteLine(string line)
         {
+            if (this.State != TextFileWriterState.Running)
+                throw new InvalidOperationException($"{this.GetType().Name} is {this.State} and cannot write while not in a {TextFileWriterState.Running} state.");
+
             lock (this._queueLock)
                 this._queue.Enqueue(line);
         }
