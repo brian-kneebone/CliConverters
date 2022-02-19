@@ -34,7 +34,7 @@ namespace Net6CliTools.Loggers
             this._writer = new StreamWriter(this._stream);
         }
 
-        private async void StartAsync()
+        public async void StartAsync()
         {
             var task = new Task(() => { this.LoopingWrite(); });
             // var awaiter = task.GetAwaiter();
