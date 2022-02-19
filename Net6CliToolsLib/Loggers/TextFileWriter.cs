@@ -75,33 +75,6 @@ namespace Net6CliTools.Loggers
 
         }
 
-        public void WaitUntilDisposed(int? waitInMilliseconds = null)
-        {
-            var waitStarted = DateTime.Now;
-
-            while (this._state != TextFileWriterState.Disposed)
-            {
-                if (waitInMilliseconds.HasValue)
-                {
-                    var duration = DateTime.Now - waitStarted;
-
-                    if (duration.TotalMilliseconds > waitInMilliseconds.Value)
-                        throw new TimeoutException($"{this.GetType().Name} failed to dispose in {waitInMilliseconds.Value} milliseconds with state {this._state}.");
-                }
-
-                Thread.Sleep(50);
-            }
-        }
-
-
-        //public async Task StopAsync()
-        //{
-        //    var task = new Task(() => { this.Stop(); });
-        //    // var awaiter = task.GetAwaiter();
-        //    task.Start();
-        //    await task;
-        //}
-
         public void Stop()
         {
             if (this._state != TextFileWriterState.Running)
