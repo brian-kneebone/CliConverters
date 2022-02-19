@@ -13,8 +13,13 @@ namespace Net6CliTools.Loggers
     [TestClass]
     public class TestTextFileWriter
     {
+        private const int _5000_MS = 5000;
+        private const int _6000_MS = 6000;
+        private const int _20000_MS = 20000;
+
         [TestMethod]
         [ExcludeFromCodeCoverage]
+        [Timeout(_6000_MS)]
         public void TestQuicklyOpeningAndClosingWithWrite()
         {
             var filename = "TextFileWriter_QuickOpenCloseWithWrite_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
@@ -22,15 +27,15 @@ namespace Net6CliTools.Loggers
             writer.Start();
             writer.WriteLine("Test quickly opening & closing.");
             writer.Stop();
-            writer.WaitUntilDisposed(5000);
 
+            Assert.IsTrue(writer.File.Exists(_5000_MS)); 
             Assert.IsTrue(writer.State == TextFileWriterState.Disposed);
-            Assert.IsTrue(File.Exists(filename));
             Assert.IsTrue(File.ReadAllBytes(filename).Length > 0);
         }
 
         [TestMethod]
         [ExcludeFromCodeCoverage]
+        [Timeout(_6000_MS)]
         public void TestQuicklyOpeningAndClosingNoWrite()
         {
             var filename = "TextFileWriter_QuickOpenCloseNoWrite_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
@@ -38,14 +43,14 @@ namespace Net6CliTools.Loggers
             writer.Start();
             // NoWrite
             writer.Stop();
-            writer.WaitUntilDisposed(5000);
 
+            Assert.IsTrue(!writer.File.Exists(_5000_MS)); 
             Assert.IsTrue(writer.State == TextFileWriterState.Disposed);
-            Assert.IsTrue(!File.Exists(filename));
         }
 
         [TestMethod]
         [ExcludeFromCodeCoverage]
+        [Timeout(_6000_MS)]
         public void TestErrorStoppingIdle()
         {
             var filename = "TextFileWriter_ErrorStoppingIdle_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
@@ -55,15 +60,13 @@ namespace Net6CliTools.Loggers
                 writer.Stop();
             });
 
-            //writer.Stop();
-            //writer.WaitUntilDisposed(5000);
-
+            Assert.IsTrue(!writer.File.Exists(_5000_MS));
             Assert.IsTrue(writer.State == TextFileWriterState.Idle);
-            Assert.IsTrue(!File.Exists(filename));
         }
 
         [TestMethod]
         [ExcludeFromCodeCoverage]
+        [Timeout(_6000_MS)]
         public void TestErrorWritingIdle()
         {
             var filename = "TextFileWriter_ErrorWritingIdle_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
@@ -73,15 +76,14 @@ namespace Net6CliTools.Loggers
                 writer.WriteLine("Test writing while idle.");
             });
 
-            //writer.Stop();
-            //writer.WaitUntilDisposed(5000);
-
+            Assert.IsTrue(!writer.File.Exists(_5000_MS));
             Assert.IsTrue(writer.State == TextFileWriterState.Idle);
-            Assert.IsTrue(!File.Exists(filename));
+
         }
 
         [TestMethod]
         [ExcludeFromCodeCoverage]
+        [Timeout(_6000_MS)]
         public void TestErrorStartingRunning()
         {
             var filename = "TextFileWriter_ErrorStartingRunning_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
@@ -91,14 +93,14 @@ namespace Net6CliTools.Loggers
             Assert.ThrowsException<InvalidOperationException>(() => { writer.Start(); });
 
             writer.Stop();
-            writer.WaitUntilDisposed(5000);
 
+            Assert.IsTrue(!writer.File.Exists(_5000_MS));
             Assert.IsTrue(writer.State == TextFileWriterState.Disposed);
-            Assert.IsTrue(!File.Exists(filename));
         }
 
         [TestMethod]
         [ExcludeFromCodeCoverage]
+        [Timeout(_20000_MS)]
         public void TestMultithreadedWrite()
         {
             var filename = "TextFileWriter_MultithreadedWrite_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
@@ -112,11 +114,10 @@ namespace Net6CliTools.Loggers
             WaitUntilThreadsThatErrorLogComplete(tasks, writer, 25);
 
             writer.Stop();
-            writer.WaitUntilDisposed(5000);
 
+            Assert.IsTrue(writer.File.Exists(_5000_MS));
             Assert.IsTrue(tasks.Count(t => t.Status == TaskStatus.RanToCompletion) == tasks.Length);
             Assert.IsTrue(writer.State == TextFileWriterState.Disposed);
-            Assert.IsTrue(File.Exists(filename));
             Assert.IsTrue(File.ReadAllBytes(filename).Length > 0);
         }
 
