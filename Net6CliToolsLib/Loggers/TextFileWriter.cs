@@ -11,7 +11,7 @@ namespace Net6CliTools.Loggers
         private DateTime? _start = null;
 
         private readonly object _queueLock = new object();
-        private readonly Queue<string> _queue = new();
+        private Queue<string> _queue = new();
 
         private readonly object _stateLock = new object();
 
@@ -34,22 +34,29 @@ namespace Net6CliTools.Loggers
             this._file = new FileInfo(filename ?? throw new ArgumentNullException(nameof(filename)));
         }
 
-        public async void StartAsync()
+        private async void StartAsync()
         {
-            var task = new Task(() => { this.Start(); });
-            // var awaiter = task.GetAwaiter();
+            if (this.State != TextFileWriterState.Idle)
+                throw new InvalidOperationException($"{this.GetType().Name} is {this.State} and cannot start asynchronously while not in a {TextFileWriterState.Idle} state.");
+
+            this._state = TextFileWriterState.Running;
+
+            var task = new Task(() => {
+                this._start = DateTime.Now;
+                this.LoopingWrite();
+            });
+            
             task.Start();
             await task;
         }
 
-        private void Start()
+        public void Start()
         {
-            this._start = DateTime.Now;
-            this.State = TextFileWriterState.Running;
-            this.LoopingWrite();
+            this.StartAsync();
+            this.WaitUntilRunning();
         }
 
-        public void WaitUntilRunning()
+        private void WaitUntilRunning()
         {
             switch (this.State)
             {
@@ -57,6 +64,7 @@ namespace Net6CliTools.Loggers
                     return;
 
                 case TextFileWriterState.Idle:
+                    while (this.State == TextFileWriterState.Idle) Thread.Sleep(50);
                     return;
 
                 case TextFileWriterState.Stopping:

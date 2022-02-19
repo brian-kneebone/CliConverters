@@ -18,8 +18,9 @@ namespace Net6CliTools.Loggers
         {
             var filename = "TextFileWriter_QuickOpenCloseWithWrite_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
             var writer = new TextFileWriter(filename);
-            writer.StartAsync();
-            writer.WaitUntilRunning();
+            writer.Start();
+            // writer.StartAsync();
+            // writer.WaitUntilRunning();
             writer.WriteLineAsync("Test quickly opening & closing.");
             writer.Stop();
             
@@ -33,8 +34,9 @@ namespace Net6CliTools.Loggers
         {
             var filename = "TextFileWriter_QuickOpenCloseNoWrite_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
             var writer = new TextFileWriter(filename);
-            writer.StartAsync();
-            writer.WaitUntilRunning();
+            writer.Start();
+            // writer.StartAsync();
+            // writer.WaitUntilRunning();
             // NoWrite
             writer.Stop();
             Assert.IsTrue(!File.Exists(filename));
@@ -46,8 +48,9 @@ namespace Net6CliTools.Loggers
         {
             var filename = "TextFileWriter_MultithreadedWrite_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
             var writer = new TextFileWriter(filename);
-            writer.StartAsync();
-            writer.WaitUntilRunning();
+            writer.Start();
+            // writer.StartAsync();
+            // writer.WaitUntilRunning();
 
             var tasks = CreateThreadsThatErrorLog(writer, 200);
             StartThreadsThatErrorLog(tasks);
