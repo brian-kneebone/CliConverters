@@ -6,59 +6,78 @@ using System.Threading.Tasks;
 
 namespace Net6CliTools.Loggers
 {
-    public class TextFileWriter
+    public class TextFileWriter : IDisposable
     {
         private DateTime? _start = null;
 
         private readonly object _queueLock = new object();
         private Queue<string> _queue = new Queue<string>();
 
-        private readonly object _cancelLock = new object();
+        private readonly object _stateLock = new object();
 
-        private bool CancellationPending
+        private TextFileWriterState State
         {
-            get { lock (_cancelLock) { return this._cancellationPending; } }
-            set { lock (_cancelLock) { this._cancellationPending = value; } }
+            get { lock (_stateLock) { return this._state; } }
+            set { lock (_stateLock) { this._state = value; } }
         }
 
-        private bool _cancellationPending = false;
+        private TextFileWriterState _state = TextFileWriterState.Idle;
 
         private readonly FileInfo? _file;
-        private readonly FileStream? _stream;
-        private readonly StreamWriter? _writer;
+        private FileStream? _stream;
+        private StreamWriter? _writer;
 
         public TextFileWriter(string? filename)
         {
             this._file = new FileInfo(filename ?? throw new ArgumentNullException(nameof(filename)));
-            this._stream = this._file.OpenWrite();
-            this._writer = new StreamWriter(this._stream);
         }
 
         public async void StartAsync()
         {
-            var task = new Task(() => { this.LoopingWrite(); });
+            var task = new Task(() => { this.Start(); });
             // var awaiter = task.GetAwaiter();
             task.Start();
             await task;
         }
 
-        public async void StopAsync()
+        private void Start()
         {
-            var task = new Task(() => { this.CancellationPending = false; });
-            // var awaiter = task.GetAwaiter();
-            task.Start();
-            await task;
+            this._start = DateTime.Now;
+            this.State = TextFileWriterState.Running;
+            this.LoopingWrite();
         }
 
-        public async void WriteAsync(string line)
+        //public async Task StopAsync()
+        //{
+        //    var task = new Task(() => { this.Stop(); });
+        //    // var awaiter = task.GetAwaiter();
+        //    task.Start();
+        //    await task;
+        //}
+
+        public void Stop()
         {
-            var task = new Task(() => { this.Write(line); });
+            this.State = TextFileWriterState.Stopping;
+
+            while(this.State != TextFileWriterState.Disposed)
+                Thread.Sleep(250);
+        }
+
+        public void Dispose()
+        {
+            this.Stop();
+            GC.SuppressFinalize(this);
+        }
+
+        public async void WriteLineAsync(string line)
+        {
+            var task = new Task(() => { this.WriteLine(line); });
             // var awaiter = task.GetAwaiter();
             task.Start();
             await task;
         }
 
-        private void Write(string line)
+        private void WriteLine(string line)
         {
             lock (this._queueLock)
                 this._queue.Enqueue(line);
@@ -66,18 +85,19 @@ namespace Net6CliTools.Loggers
 
         private void LoopingWrite()
         {
-            while (!this.CancellationPending)
+            while (this.State == TextFileWriterState.Running)
             {
-                this.WriteAndFlushQueueIfNeeded();
+                this.WriteIfNeeded();
 
-                if (!this.CancellationPending)
+                if (this.State == TextFileWriterState.Running)
                     Thread.Sleep(100); 
             }
 
-            this.WriteStopIfNeeded();
+            this.WriteIfNeeded();
+            this.WriteStop();
         }
 
-        private void WriteAndFlushQueueIfNeeded()
+        private void WriteIfNeeded()
         {
             var count = this.GetQueueCount();
 
@@ -97,26 +117,38 @@ namespace Net6CliTools.Loggers
 
         private void WriteStartIfNeeded(bool enqueuedMessagesFound)
         {
-            if (!enqueuedMessagesFound || this._start.HasValue)
+            if (!enqueuedMessagesFound || (this._writer != null))
                 return;
 
-            this._start = DateTime.Now;
-            this._writer?.WriteLine($"Start {this._file?.Name} @ {this._start?.ToString("yyyy-MM-dd HH:mm:ss.fff")}");
-            this._writer?.WriteLine(string.Empty);
-            this._writer?.Flush();
+            if (this._file == null)
+                throw new NullReferenceException(nameof(this._file));
+
+            this._stream = this._file.OpenWrite();
+            this._writer = new StreamWriter(this._stream);
+
+            this._writer.WriteLine($"Start {this._file?.Name} @ {this._start?.ToString("yyyy-MM-dd HH:mm:ss.fff")}");
+            this._writer.WriteLine(string.Empty);
+            this._writer.Flush();
         }
 
-        private void WriteStopIfNeeded()
+        private void WriteStop()
         {
             if (!this._start.HasValue)
+            {
+                this.State = TextFileWriterState.Disposed;
                 return;
+            }
 
             var stop = DateTime.Now;
             var duration = stop - this._start.Value;
             this._writer?.WriteLine(string.Empty);
             this._writer?.WriteLine($"Stop {this._file?.Name} @ {this._start?.ToString("yyyy-MM-dd HH:mm:ss.fff")}");
-            this._writer?.WriteLine($"Duration: {duration.ToString("dd HH:mm:ss.fff")}");
+            this._writer?.WriteLine($"Duration: {duration}");
             this._writer?.Flush();
+
+            this._writer?.Dispose();
+            this._stream?.Dispose();
+            this.State = TextFileWriterState.Disposed;
         }
 
         private int GetQueueCount()

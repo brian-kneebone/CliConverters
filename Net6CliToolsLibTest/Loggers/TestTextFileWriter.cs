@@ -19,13 +19,9 @@ namespace Net6CliTools.Loggers
             var filename = "TextFileWriter_QuickOpenCloseTest_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
             var writer = new TextFileWriter(filename);
             writer.StartAsync();
-            writer.WriteAsync("Test quickly opening & closing.");
-            writer.StopAsync();
-            // writer.Dispose();
-            // Assert.IsTrue(logger.State == LoggerStates.Closed);
-
-
-
+            writer.WriteLineAsync("Test quickly opening & closing.");
+            writer.Stop();
+            
             Assert.IsTrue(File.Exists(filename));
             Assert.IsTrue(File.ReadAllBytes(filename).Length > 0);
         }
