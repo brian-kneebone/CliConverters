@@ -24,7 +24,7 @@ namespace Net6CliTools.Loggers
         {
             var filename = "TextFileWriter_QuickOpenCloseWithWrite_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
             var writer = new TextFileWriter(filename);
-            writer.Start();
+            writer.Start(_5000_MS);
             writer.WriteLine("Test quickly opening & closing.");
             writer.Stop();
 
@@ -40,7 +40,7 @@ namespace Net6CliTools.Loggers
         {
             var filename = "TextFileWriter_QuickOpenCloseNoWrite_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
             var writer = new TextFileWriter(filename);
-            writer.Start();
+            writer.Start(_5000_MS);
             // NoWrite
             writer.Stop();
 
@@ -88,9 +88,9 @@ namespace Net6CliTools.Loggers
         {
             var filename = "TextFileWriter_ErrorStartingRunning_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
             var writer = new TextFileWriter(filename);
-            writer.Start();
+            writer.Start(_5000_MS);
 
-            Assert.ThrowsException<InvalidOperationException>(() => { writer.Start(); });
+            Assert.ThrowsException<InvalidOperationException>(() => { writer.Start(_5000_MS); });
 
             writer.Stop();
 
@@ -105,7 +105,7 @@ namespace Net6CliTools.Loggers
         {
             var filename = "TextFileWriter_MultithreadedWrite_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
             var writer = new TextFileWriter(filename);
-            writer.Start();
+            writer.Start(_5000_MS);
             // writer.StartAsync();
             // writer.WaitUntilRunning();
 

@@ -47,16 +47,16 @@ namespace Net6CliTools.Loggers
             await task;
         }
 
-        public void Start()
+        public void Start(int? timeoutInMilliseconds = null)
         {
             if (this.State != TextFileWriterState.Idle)
                 throw new InvalidOperationException($"{this.GetType().Name} is {this.State} and cannot start asynchronously while not in a {TextFileWriterState.Idle} state.");
 
             this.StartAsync();
-            this.WaitUntilRunning();
+            this.WaitUntilRunning(timeoutInMilliseconds);
         }
 
-        private void WaitUntilRunning()
+        private void WaitUntilRunning(int? timeoutInMilliseconds = null)
         {
             switch (this.State)
             {
@@ -64,7 +64,24 @@ namespace Net6CliTools.Loggers
                     return;
 
                 case TextFileWriterState.Idle:
-                    while (this.State == TextFileWriterState.Idle) Thread.Sleep(50);
+
+                    var waitStart = DateTime.Now;
+
+                    while (this.State == TextFileWriterState.Idle)
+                    {
+                        Thread.Sleep(50);
+
+                        if (timeoutInMilliseconds.HasValue)
+                        {
+                            var duration = DateTime.Now - waitStart;
+
+                            if (duration.Milliseconds > timeoutInMilliseconds.Value)
+                                throw new TimeoutException($"{this.GetType().Name} did not enter the {this.State} state after {timeoutInMilliseconds.Value} milliseconds.");
+                        }
+
+                    }
+
+
                     return;
 
                 case TextFileWriterState.Stopping:
