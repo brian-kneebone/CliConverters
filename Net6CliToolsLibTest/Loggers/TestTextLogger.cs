@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace Net6CliTools.Loggers
     public class TestTextLogger
     {
         [TestMethod]
+        [ExcludeFromCodeCoverage]
         public void TestQuicklyOpeningAndClosing()
         {
             var logger = TextFileLogger.Create("QuickOpenCloseTest", LogLevels.Debug);
@@ -23,6 +25,7 @@ namespace Net6CliTools.Loggers
         }
 
         [TestMethod]
+        [ExcludeFromCodeCoverage]
         public void TestMultithreading()
         {
             var logger = TextFileLogger.Create("MultithreadingTest", LogLevels.Debug);
