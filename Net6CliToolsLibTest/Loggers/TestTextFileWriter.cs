@@ -15,6 +15,7 @@ namespace Net6CliTools.Loggers
     {
         private const int TEST_ITERATIONS = 1;
         private const int _1000_MS = 1000;
+        // private const int _3000_MS = 3000;
         private const int _5000_MS = 5000;
         private const int _7000_MS = 7000;
         private const int _18000_MS = 18000;
@@ -33,10 +34,7 @@ namespace Net6CliTools.Loggers
                 writer.WriteLine("Test quickly opening & closing.");
                 writer.Stop();
 
-                // Trying to figure out why file isn't writing!
-
-                // Assert.IsTrue(writer.File.Exists(_18000_MS));
-                var fileExists = writer.File.Exists(_18000_MS);
+                var fileExists = writer.File.Exists(_5000_MS);
 
                 var writerFilename = writer.File.Name;
                 var writerQueueCount = writer.GetQueueCount();
@@ -68,7 +66,8 @@ namespace Net6CliTools.Loggers
                 writer.Stop();
 
                 Assert.IsTrue(!writer.File.Exists(_5000_MS));
-                Assert.IsTrue(writer.State == TextFileWriterState.Disposed);
+                Assert.AreEqual(writer.GetQueueCount(), 0);
+                Assert.AreEqual(writer.State, TextFileWriterState.Disposed);
             }
         }
 
@@ -87,7 +86,8 @@ namespace Net6CliTools.Loggers
                 });
 
                 Assert.IsTrue(!writer.File.Exists(_5000_MS));
-                Assert.IsTrue(writer.State == TextFileWriterState.Idle);
+                Assert.AreEqual(writer.GetQueueCount(), 0);
+                Assert.AreEqual(writer.State, TextFileWriterState.Idle);
             }
         }
 
@@ -106,7 +106,8 @@ namespace Net6CliTools.Loggers
                 });
 
                 Assert.IsTrue(!writer.File.Exists(_5000_MS));
-                Assert.IsTrue(writer.State == TextFileWriterState.Idle);
+                Assert.AreEqual(writer.GetQueueCount(), 0);
+                Assert.AreEqual(writer.State, TextFileWriterState.Idle);
             }
 
         }
@@ -127,7 +128,8 @@ namespace Net6CliTools.Loggers
                 writer.Stop();
 
                 Assert.IsTrue(!writer.File.Exists(_5000_MS));
-                Assert.IsTrue(writer.State == TextFileWriterState.Disposed);
+                Assert.AreEqual(writer.GetQueueCount(), 0);
+                Assert.AreEqual(writer.State, TextFileWriterState.Disposed);
             }
         }
 
@@ -152,7 +154,8 @@ namespace Net6CliTools.Loggers
 
                 Assert.IsTrue(writer.File.Exists(_5000_MS));
                 Assert.IsTrue(tasks.Count(t => t.Status == TaskStatus.RanToCompletion) == tasks.Length);
-                Assert.IsTrue(writer.State == TextFileWriterState.Disposed);
+                Assert.AreEqual(writer.GetQueueCount(), 0);
+                Assert.AreEqual(writer.State, TextFileWriterState.Disposed);
                 Assert.IsTrue(File.ReadAllBytes(filename).Length > 0);
             }
         }
