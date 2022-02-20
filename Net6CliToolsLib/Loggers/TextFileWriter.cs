@@ -37,7 +37,9 @@ namespace Net6CliTools.Loggers
 
         private async void StartAsync()
         {
-            this._state = TextFileWriterState.Running;
+            // this._state = TextFileWriterState.Running;
+
+            this.State = TextFileWriterState.Running;
 
             var task = new Task(() => {
                 this._start = DateTime.Now;
@@ -94,7 +96,8 @@ namespace Net6CliTools.Loggers
 
         public void Stop()
         {
-            if (this._state != TextFileWriterState.Running)
+            // if (this._state != TextFileWriterState.Running)
+            if (this.State != TextFileWriterState.Running)
                 throw new InvalidOperationException($"{this.GetType().Name} is {this.State} and cannot stop while not in a {TextFileWriterState.Running} state.");
 
             this.State = TextFileWriterState.Stopping;
@@ -252,7 +255,8 @@ namespace Net6CliTools.Loggers
 
             this._writer?.Dispose();
             this._stream?.Dispose();
-            this._state = TextFileWriterState.Disposed;
+            // this._state = TextFileWriterState.Disposed;
+            this.State = TextFileWriterState.Disposed;
         }
 
         private void KeepWritingForALittleBitMore()
