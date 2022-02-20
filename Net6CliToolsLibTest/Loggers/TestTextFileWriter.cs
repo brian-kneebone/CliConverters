@@ -13,7 +13,7 @@ namespace Net6CliTools.Loggers
     [TestClass]
     public class TestTextFileWriter
     {
-        private const int TEST_ITERATIONS = 5;
+        private const int TEST_ITERATIONS = 1;
         private const int _1000_MS = 1000;
         private const int _5000_MS = 5000;
         private const int _6000_MS = 6000;
@@ -133,7 +133,7 @@ namespace Net6CliTools.Loggers
 
         [TestMethod]
         [ExcludeFromCodeCoverage]
-        [Timeout(_20000_MS * TEST_ITERATIONS)]
+        // [Timeout(_20000_MS * TEST_ITERATIONS)]
         public void TestMultithreadedWrite()
         {
             for (int i = 0; i < TEST_ITERATIONS; i++)

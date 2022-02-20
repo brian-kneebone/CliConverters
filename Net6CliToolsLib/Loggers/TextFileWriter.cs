@@ -113,22 +113,73 @@ namespace Net6CliTools.Loggers
 
         public void WriteLine(string line)
         {
-            if (this._state != TextFileWriterState.Running)
-                throw new InvalidOperationException($"{this.GetType().Name} is {this.State} and cannot write while not in a {TextFileWriterState.Running} state.");
+            switch (this.State)
+            {
+                case TextFileWriterState.Running:
 
-            var task = new Task(() => {
+                    var task = new Task(() =>
+                    {
+                        lock (this._queueLock)
+                            this._queue.Enqueue(line);
 
-                lock (this._queueLock)
-                    this._queue.Enqueue(line);
+                    });
 
-            });
+                    task.Start();
 
-            task.Start();
+                    break;
+
+                case TextFileWriterState.Idle:
+                case TextFileWriterState.Disposed:
+                case TextFileWriterState.Stopping:
+                default:
+                    throw new InvalidOperationException($"{this.GetType().Name} is {this.State} and cannot write while not in a {TextFileWriterState.Running} state.");
+            }
+
         }
+
+        // Fails by letting items get enqueued while stopping (race condition when switching out of running state)!
+        //
+        //public void WriteLine(string line)
+        //{
+        //    if (this._state != TextFileWriterState.Running)
+        //        throw new InvalidOperationException($"{this.GetType().Name} is {this.State} and cannot write while not in a {TextFileWriterState.Running} state.");
+
+        //    var task = new Task(() =>
+        //    {
+
+        //        lock (this._queueLock)
+        //            this._queue.Enqueue(line);
+
+        //    });
+
+        //    task.Start();
+        //}
+
+        // Works as a blocking operation, but doubles multi threaded test performance completion
+        // 
+        //public void WriteLine(string line)
+        //{
+        //    lock (this._queueLock)
+        //    {
+        //        switch (this._state)
+        //        {
+        //            case TextFileWriterState.Running:
+        //                this._queue.Enqueue(line);
+        //                break;
+        //
+        //            case TextFileWriterState.Idle:
+        //            case TextFileWriterState.Disposed:
+        //            case TextFileWriterState.Stopping:
+        //            default:
+        //                throw new InvalidOperationException($"{this.GetType().Name} is {this.State} and cannot write while not in a {TextFileWriterState.Running} state.");
+        //        }
+        //    }
+
+        //}
 
         private void LoopingWrite()
         {
-            while (this._state == TextFileWriterState.Running)
+            while (this.State == TextFileWriterState.Running)
             {
                 this.WriteIfNeeded();
 
