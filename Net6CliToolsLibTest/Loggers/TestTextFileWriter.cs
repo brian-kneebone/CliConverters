@@ -16,13 +16,13 @@ namespace Net6CliTools.Loggers
         private const int TEST_ITERATIONS = 1;
         private const int _1000_MS = 1000;
         private const int _5000_MS = 5000;
-        private const int _6000_MS = 6000;
+        private const int _7000_MS = 7000;
         private const int _18000_MS = 18000;
         private const int _20000_MS = 20000;
 
         [TestMethod]
         [ExcludeFromCodeCoverage]
-        [Timeout(_20000_MS * TEST_ITERATIONS)]
+        [Timeout(_7000_MS * TEST_ITERATIONS)]
         public void TestQuicklyOpeningAndClosingWithWrite()
         {
             for (int i = 0; i < TEST_ITERATIONS; i++)
@@ -56,7 +56,7 @@ namespace Net6CliTools.Loggers
 
         [TestMethod]
         [ExcludeFromCodeCoverage]
-        [Timeout(_6000_MS * TEST_ITERATIONS)]
+        [Timeout(_7000_MS * TEST_ITERATIONS)]
         public void TestQuicklyOpeningAndClosingNoWrite()
         {
             for (int i = 0; i < TEST_ITERATIONS; i++)
@@ -74,7 +74,7 @@ namespace Net6CliTools.Loggers
 
         [TestMethod]
         [ExcludeFromCodeCoverage]
-        [Timeout(_6000_MS * TEST_ITERATIONS)]
+        [Timeout(_7000_MS * TEST_ITERATIONS)]
         public void TestErrorStoppingIdle()
         {
             for (int i = 0; i < TEST_ITERATIONS; i++)
@@ -93,7 +93,7 @@ namespace Net6CliTools.Loggers
 
         [TestMethod]
         [ExcludeFromCodeCoverage]
-        [Timeout(_6000_MS * TEST_ITERATIONS)]
+        [Timeout(_7000_MS * TEST_ITERATIONS)]
         public void TestErrorWritingIdle()
         {
             for (int i = 0; i < TEST_ITERATIONS; i++)
@@ -113,7 +113,7 @@ namespace Net6CliTools.Loggers
 
         [TestMethod]
         [ExcludeFromCodeCoverage]
-        [Timeout(_6000_MS * TEST_ITERATIONS)]
+        [Timeout(_7000_MS * TEST_ITERATIONS)]
         public void TestErrorStartingRunning()
         {
             for (int i = 0; i < TEST_ITERATIONS; i++)
@@ -133,7 +133,7 @@ namespace Net6CliTools.Loggers
 
         [TestMethod]
         [ExcludeFromCodeCoverage]
-        // [Timeout(_20000_MS * TEST_ITERATIONS)]
+        [Timeout(_20000_MS * TEST_ITERATIONS)]
         public void TestMultithreadedWrite()
         {
             for (int i = 0; i < TEST_ITERATIONS; i++)

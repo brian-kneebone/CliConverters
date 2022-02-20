@@ -12,6 +12,7 @@ namespace Net6CliTools.Loggers
 
         private readonly object _queueLock = new object();
         private Queue<string> _queue = new();
+        private DateTime? _queuedLast = null;
 
         private readonly object _stateLock = new object();
 
@@ -81,7 +82,6 @@ namespace Net6CliTools.Loggers
 
                     }
 
-
                     return;
 
                 case TextFileWriterState.Stopping:
@@ -120,7 +120,17 @@ namespace Net6CliTools.Loggers
                     var task = new Task(() =>
                     {
                         lock (this._queueLock)
+                        {
+                            var now = DateTime.Now;
+                            var lastQueued = this._queuedLast;
+
+                            if (lastQueued.HasValue)
+                                lastQueued = (now > lastQueued.Value) ? now : lastQueued.Value;
+                            else
+                                lastQueued = now;
+
                             this._queue.Enqueue(line);
+                        }
 
                     });
 
@@ -182,12 +192,9 @@ namespace Net6CliTools.Loggers
             while (this.State == TextFileWriterState.Running)
             {
                 this.WriteIfNeeded();
-
-                if (this._state == TextFileWriterState.Running)
-                    Thread.Sleep(100); 
+                Thread.Sleep(100); 
             }
 
-            this.WriteIfNeeded();
             this.WriteStop();
         }
 
@@ -233,8 +240,11 @@ namespace Net6CliTools.Loggers
                 return;
             }
 
+            this.KeepWritingForALittleBitMore();
+
             var stop = DateTime.Now;
             var duration = stop - this._start.Value;
+            
             this._writer?.WriteLine(string.Empty);
             this._writer?.WriteLine($"Stop {this._file?.Name} @ {this._start?.ToString("yyyy-MM-dd HH:mm:ss.fff")}");
             this._writer?.WriteLine($"Duration: {duration}");
@@ -243,6 +253,31 @@ namespace Net6CliTools.Loggers
             this._writer?.Dispose();
             this._stream?.Dispose();
             this._state = TextFileWriterState.Disposed;
+        }
+
+        private void KeepWritingForALittleBitMore()
+        {
+            var now = DateTime.Now;
+            var delta = now - this.LastEnqueueOrFirstNow(now);
+
+            while (delta < TimeSpan.FromMilliseconds(500))
+            {
+                this.WriteIfNeeded();
+                delta = DateTime.Now - this.LastEnqueueOrFirstNow(now);
+                Thread.Sleep(100);
+            }
+
+        }
+
+        private DateTime LastEnqueueOrFirstNow(DateTime now)
+        {
+            lock (this._queueLock)
+            {
+                if (this._queuedLast.HasValue)
+                    return this._queuedLast.Value;
+                else
+                    return now;
+            }
         }
 
         public int GetQueueCount()
