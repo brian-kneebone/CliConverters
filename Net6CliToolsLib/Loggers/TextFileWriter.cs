@@ -194,7 +194,7 @@ namespace Net6CliTools.Loggers
             this._state = TextFileWriterState.Disposed;
         }
 
-        private int GetQueueCount()
+        public int GetQueueCount()
         {
             lock (this._queueLock)
                 return this._queue.Count;

@@ -13,24 +13,41 @@ namespace Net6CliTools.Loggers
     [TestClass]
     public class TestTextFileWriter
     {
+        private const int _1000_MS = 1000;
         private const int _5000_MS = 5000;
         private const int _6000_MS = 6000;
+        private const int _18000_MS = 18000;
         private const int _20000_MS = 20000;
 
         [TestMethod]
         [ExcludeFromCodeCoverage]
-        [Timeout(_6000_MS)]
+        [Timeout(_20000_MS)]
         public void TestQuicklyOpeningAndClosingWithWrite()
         {
             var filename = "TextFileWriter_QuickOpenCloseWithWrite_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
             var writer = new TextFileWriter(filename);
-            writer.Start(_5000_MS);
+            writer.Start(_1000_MS);
             writer.WriteLine("Test quickly opening & closing.");
             writer.Stop();
 
-            Assert.IsTrue(writer.File.Exists(_5000_MS)); 
-            Assert.IsTrue(writer.State == TextFileWriterState.Disposed);
-            Assert.IsTrue(File.ReadAllBytes(filename).Length > 0);
+            // Trying to figure out why file isn't writing!
+
+            // Assert.IsTrue(writer.File.Exists(_18000_MS));
+            var fileExists = writer.File.Exists(_18000_MS);
+
+            var writerFilename = writer.File.Name;
+            var writerQueueCount = writer.GetQueueCount();
+            var writerState = writer.State;
+
+            if (!fileExists)
+            {
+                Assert.Fail($"File {writerFilename} not found with queue {writerQueueCount} and state {writerState}.");
+            }
+
+            Assert.IsTrue(File.ReadAllBytes(writerFilename).Length > 0);
+            Assert.AreEqual(writerQueueCount, 0);
+            Assert.AreEqual(writerState, TextFileWriterState.Disposed);
+
         }
 
         [TestMethod]
@@ -40,7 +57,7 @@ namespace Net6CliTools.Loggers
         {
             var filename = "TextFileWriter_QuickOpenCloseNoWrite_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
             var writer = new TextFileWriter(filename);
-            writer.Start(_5000_MS);
+            writer.Start(_1000_MS);
             // NoWrite
             writer.Stop();
 
@@ -88,7 +105,7 @@ namespace Net6CliTools.Loggers
         {
             var filename = "TextFileWriter_ErrorStartingRunning_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
             var writer = new TextFileWriter(filename);
-            writer.Start(_5000_MS);
+            writer.Start(_1000_MS);
 
             Assert.ThrowsException<InvalidOperationException>(() => { writer.Start(_5000_MS); });
 
@@ -105,7 +122,7 @@ namespace Net6CliTools.Loggers
         {
             var filename = "TextFileWriter_MultithreadedWrite_" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss-fff") + ".log";
             var writer = new TextFileWriter(filename);
-            writer.Start(_5000_MS);
+            writer.Start(_1000_MS);
             // writer.StartAsync();
             // writer.WaitUntilRunning();
 
