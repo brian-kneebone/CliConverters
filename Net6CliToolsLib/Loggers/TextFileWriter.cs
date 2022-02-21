@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,8 @@ namespace Net6CliTools.Loggers
         private DateTime? _start = null;
 
         private readonly object _queueLock = new object();
-        private Queue<string> _queue = new();
+        // private Queue<string> _queue = new();
+        private ConcurrentQueue<string> _queue = new();
         private DateTime? _queuedLast = null;
 
         private readonly object _stateLock = new object();
@@ -292,8 +294,18 @@ namespace Net6CliTools.Loggers
 
         private string DequeueLine()
         {
+            // lock (this._queueLock)
+            //     return this._queue.Dequeue();
+
             lock (this._queueLock)
-                return this._queue.Dequeue();
+            {
+                while (true)
+                {
+                    if (this._queue.TryDequeue(out string? _line))
+                        return _line;
+                }
+            }
+            
         }
 
     }
