@@ -8,9 +8,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Net6CliToolsLib", "Net6CliToolsLib\Net6CliToolsLib.csproj", "{CCFC2E11-3D13-4B2E-A53F-69CE167F80B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotNet6ToolsLib", "DotNet6ToolsLib\DotNet6ToolsLib.csproj", "{CCFC2E11-3D13-4B2E-A53F-69CE167F80B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net6CliToolsLibTest", "Net6CliToolsLibTest\Net6CliToolsLibTest.csproj", "{8F7FB2E8-02E7-48FB-A942-FC5309CD228D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNet6ToolsLibTest", "DotNet6ToolsLibTest\DotNet6ToolsLibTest.csproj", "{8F7FB2E8-02E7-48FB-A942-FC5309CD228D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
