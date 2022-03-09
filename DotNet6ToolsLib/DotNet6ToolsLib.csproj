@@ -5,9 +5,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Authors>brian-kneebone</Authors>
-    <AssemblyName>Net6CliToolsLib</AssemblyName>
-    <RootNamespace>Net6CliTools</RootNamespace>
-    <Description>A common library for various .NET 6 CLI Tools.</Description>
+    <AssemblyName>DotNet6ToolsLib</AssemblyName>
+    <RootNamespace>DotNet6Tools</RootNamespace>
+    <Description>A common library for various .NET 6 Tools.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>

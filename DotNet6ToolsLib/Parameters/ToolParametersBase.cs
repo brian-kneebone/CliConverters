@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace Net6CliTools.Parameters
+namespace DotNet6Tools.Parameters
 {
     public abstract class ToolParametersBase
     {

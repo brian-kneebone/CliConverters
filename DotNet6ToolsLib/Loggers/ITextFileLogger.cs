@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Net6CliTools.Loggers
+namespace DotNet6Tools.Loggers
 {
     public interface ITextFileLogger : ILogger
     {
